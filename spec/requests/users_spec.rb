@@ -34,6 +34,20 @@ RSpec.describe "Users", type: :request do
       end
 
       it "filed, email is exists" do
+        user = create(:user)
+        post "/users",
+             params: {
+               name: user.name,
+               email: user.email,
+               password: "123456",
+               password_confirmation: "123456",
+             }.to_json, headers: basic_headers
+        expect(response.status).to eq(422)
+        expect(response.body).to include_json({
+          fields: [{
+            attribute: "email"
+          }]
+        })
       end
     end
 
