@@ -1,10 +1,11 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-require 'spec_helper'
-ENV['RAILS_ENV'] ||= 'test'
-require_relative '../config/environment'
+require "spec_helper"
+ENV["RAILS_ENV"] ||= "test"
+require_relative "../config/environment"
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
-require 'rspec/rails'
+require "rspec/rails"
+require "rspec/json_expectations"
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -39,7 +40,24 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
-  # config.use_active_record = false
+  config.use_active_record = false
+
+  config.include Module.new {
+    def basic_headers
+      {
+        "Content-Type" => "application/json",
+      }
+    end
+
+    def user_headers(user: @user)
+      jwt =
+        JWT.encode({
+          user_id: user.id,
+          created_at: DateTime.now.strftime("%Q"),
+        }, Rails.application.credentials.secret_key_base)
+      basic_headers.merge(Authorization: jwt)
+    end
+  }
 
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and

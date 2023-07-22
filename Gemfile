@@ -44,6 +44,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0.0'
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "standard"
+  gem "rspec-json_expectations"
   gem 'database_cleaner-active_record'
   gem "factory_bot"
   gem "faker"
