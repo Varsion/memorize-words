@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Users", type: :request do
   describe "Users" do
-    context "register" do
+    context "#create register" do
       it "success" do
         post "/users",
              params: {
@@ -45,19 +45,32 @@ RSpec.describe "Users", type: :request do
         expect(response.status).to eq(422)
         expect(response.body).to include_json({
           fields: [{
-            attribute: "email"
-          }]
+            attribute: "email",
+          }],
         })
       end
     end
 
-    context "get info" do
-    end
+    context "#show get info" do
+      before(:each) do
+        @user = create(:user)
+      end
 
-    context "update info" do
-    end
+      it "success" do
+        get "/users/#{@user.id}",
+          headers: user_headers
+        expect(response.status).to eq(200)
+        expect(response.body).to include_json({
+          name: @user.name,
+          email: @user.email,
+        })
+      end
 
-    context "archive account" do
+      it "failed, without token" do
+        get "/users/#{@user.id}",
+          headers: basic_headers
+        expect(response.status).to eq(401)
+      end
     end
   end
 end

@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!, only: [:show]
+
   def create
     # change pwd confirmation
     if params[:password] != params[:password_confirmation]
@@ -8,7 +10,7 @@ class UsersController < ApplicationController
     @user = User.new(create_params)
 
     if @user.save
-      render :show, status: 201
+      render "show", status: 201
     else
       @record = @user
       render "common/record_error", status: 422
@@ -16,20 +18,13 @@ class UsersController < ApplicationController
   end
 
   def show
+    @user = @current_user
+    render "show"
   end
 
-  def update
-  end
-
-  def destroy
-  end
-
-private
+  private
 
   def create_params
     params.permit(:name, :email, :password, :password_confirmation)
-  end
-
-  def update_params
   end
 end
