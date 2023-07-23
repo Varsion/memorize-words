@@ -5,3 +5,11 @@
 ## Description
 
 *PENDING*
+
+## ToDo
+
+* [x] User
+* [ ] Session
+* [ ] Glossary
+* [ ] Vocabulary
+* [ ] Collection
