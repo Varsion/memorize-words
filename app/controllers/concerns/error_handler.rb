@@ -2,7 +2,7 @@ module ErrorHandler
   extend ActiveSupport::Concern
 
   included do
-    rescue_from(JWT::DecodeError, UnauthorizedException) { |err| handler_401(err: err) }
+    rescue_from(JWT::DecodeError, UnauthorizedException) { |err| handle_401(err: err) }
   end
 
   def handle_error(status:, err: nil, message: nil, fields: nil)
@@ -22,7 +22,11 @@ module ErrorHandler
     handle_error(status: 422, fields: fields, message: message || "参数不合法")
   end
 
-  def handler_401(err:)
+  def handle_401(err:)
     handle_error(status: 401, err: err, message: "用户权限校验失败")
+  end
+
+  def handle_404(fields:, model:)
+    handle_error(status: 404, fields: fields, message: "#{model} Not Found")
   end
 end
