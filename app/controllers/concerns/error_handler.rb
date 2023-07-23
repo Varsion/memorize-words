@@ -19,7 +19,7 @@ module ErrorHandler
 
   # params error
   def handle_422(message: nil, fields:)
-    handler_error(status: 422, fields: fields, message: message || "参数不合法")
+    handle_error(status: 422, fields: fields, message: message || "参数不合法")
   end
 
   def handler_401(err:)
