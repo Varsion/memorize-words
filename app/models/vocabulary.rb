@@ -1,6 +1,6 @@
 class Vocabulary < ApplicationRecord
-  validates :email, uniqueness: true
+  validates :display, uniqueness: true
   has_many :sentences
 
-  enum :type, en: 0
+  enum language: { en: 0 }
 end
