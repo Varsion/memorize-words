@@ -17,6 +17,8 @@ RSpec.describe "Users", type: :request do
           email: "jianhua@exm.com",
         })
         expect(User.count).to eq(1)
+        expect(Glossary.count).to eq(1)
+        expect(Glossary.first.title).to eq("Jianhua 的 生词本")
       end
 
       it "failed, password_confirmation wrong" do
