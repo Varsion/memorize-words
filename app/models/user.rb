@@ -20,6 +20,7 @@ class User < ApplicationRecord
     glossaries << Glossary.create(
       title: "#{name} 的 生词本",
       content: "用户创建时自动创建的默认生词本",
+      owner_id: self.id,
     )
   end
 end

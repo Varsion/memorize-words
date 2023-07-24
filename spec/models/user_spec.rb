@@ -9,5 +9,6 @@ RSpec.describe User, type: :model do
     )
     expect(Glossary.count).to eq(1)
     expect(Glossary.first.title).to eq("jianhua 的 生词本")
+    expect(Glossary.first.owner).to eq(user)
   end
 end
