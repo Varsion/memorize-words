@@ -2,6 +2,7 @@ class GlossariesController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    @glossaries = @current_user.glossaries.uniq
   end
 
   def create

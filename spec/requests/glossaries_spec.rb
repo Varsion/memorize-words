@@ -18,4 +18,14 @@ RSpec.describe "Glossaries", type: :request do
     })
     expect(@user.glossaries.uniq.count).to eq(2)
   end
+
+  it "get user's glossaries" do
+    glossary = create(:glossary)
+    @user.glossaries << glossary
+    get "/glossaries", headers: user_headers
+
+    result = JSON.parse(response.body)
+    expect(response.status).to eq(200)
+    expect(result.count).to eq(2)
+  end
 end
