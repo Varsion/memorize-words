@@ -16,6 +16,21 @@ class GlossariesController < ApplicationController
     @glossary = Glossary.find_by(id: params[:id])
   end
 
+  def update
+    @glossary = @current_user.glossaries.find_by(id: params[:id])
+
+    if @glossary.nil?
+      handle_404(fields: "glossary", model: "Glossary") and return
+    end
+
+    if @glossary.update(update_params)
+      render "show", status: 200
+    else
+      @record = @glossary
+      render "common/record_error", status: 422
+    end
+  end
+
   def delete
     # archive
     # maybe need
