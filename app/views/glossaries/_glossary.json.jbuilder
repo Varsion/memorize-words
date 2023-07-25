@@ -1,3 +1,3 @@
 json.extract! glossary, :id, :title, :content
 
-# with vocabularies
+json.vocabularies glossary.vocabularies, partial: "shared/vocabulary", as: :vocabulary

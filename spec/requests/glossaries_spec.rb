@@ -19,17 +19,41 @@ RSpec.describe "Glossaries", type: :request do
     expect(@user.glossaries.uniq.count).to eq(2)
   end
 
-  it "get user's glossaries" do
-    glossary = create(:glossary)
-    @user.glossaries << glossary
-    get "/glossaries", headers: user_headers
+  context "index and show" do
+    it "get user's glossaries" do
+      glossary = create(:glossary)
+      @user.glossaries << glossary
+      get "/glossaries", headers: user_headers
 
-    result = JSON.parse(response.body)
-    expect(response.status).to eq(200)
-    expect(result.count).to eq(2)
+      result = JSON.parse(response.body)
+      expect(response.status).to eq(200)
+      expect(result.count).to eq(2)
+    end
+
+    it "get glossaries with vocabulary" do
+      glossary = @user.glossaries.first
+      vocs = create_list(:vocabulary, 5)
+      glossary.add_vocabularies(vocs.pluck(:id))
+      get "/glossaries/#{glossary.id}", headers: user_headers
+      expect(response.status).to eq(200)
+      result = JSON.parse(response.body)
+      expect(result["vocabularies"].count).to eq(5)
+    end
+
+    it "get glossaries with vocabulary and sentences" do
+      glossary = @user.glossaries.first
+      voc = create(:vocabulary)
+      sentence = create(:sentence, vocabulary: voc)
+      glossary.add_vocabularies([voc.id])
+      get "/glossaries/#{glossary.id}", headers: user_headers
+      expect(response.status).to eq(200)
+      result = JSON.parse(response.body)
+      expect(result["vocabularies"].count).to eq(1)
+      expect(result["vocabularies"][0]["sentences"].count).to eq(1)
+    end
   end
 
-  context "update base info" do
+  context "update" do
     it "update glossaries info success" do
       glossary = @user.glossaries.first
 
