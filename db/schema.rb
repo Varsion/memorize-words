@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_24_160139) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_25_124641) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -30,6 +30,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_160139) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "owner_id"
+  end
+
+  create_table "glossary_vocabularies", force: :cascade do |t|
+    t.integer "glossary_id"
+    t.integer "vocabulary_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sentences", force: :cascade do |t|
