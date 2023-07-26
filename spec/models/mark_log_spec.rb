@@ -1,19 +1,29 @@
 require "rails_helper"
 
 RSpec.describe MarkLog, type: :model do
+  before(:each) do
+    @user = create(:user)
+  end
+
   context "relation with user and vocabulary" do
-    it "work" do
-      voc_1 = create(:vocabulary)
-      voc_2 = create(:vocabulary)
-      voc_3 = create(:vocabulary)
-      user = create(:user)
+    it "work, known vocabulary" do
+      voc = create(:vocabulary)
+      mark_log = create(:mark_log, user: @user, vocabulary: voc)
 
-      mark_log_1 = create(:mark_log, user: user, vocabulary: voc_1)
-      mark_log_2 = create(:mark_log, user: user, vocabulary: voc_2, action: "unknown")
+      expect(voc.user_state(@user.id)).to eq("known")
+    end
 
-      expect(voc_1.user_state(user.id)).to eq("known")
-      expect(voc_2.user_state(user.id)).to eq("unknown")
-      expect(voc_3.user_state(user.id)).to eq("unknown")
+    it "work, unknown vocabulary" do
+      voc = create(:vocabulary)
+      mark_log = create(:mark_log, user: @user, vocabulary: voc, action: "unknown")
+
+      expect(voc.user_state(@user.id)).to eq("unknown")
+    end
+
+    it "work, no mark log" do
+      voc = create(:vocabulary)
+
+      expect(voc.user_state(@user.id)).to eq("unknown")
     end
   end
 end
