@@ -6,5 +6,9 @@ Rails.application.routes.draw do
 
   resources :users, only: [:create, :show]
   resources :sessions, only: [:create]
-  resources :glossaries, only: [:index, :create, :update, :show]
+  resources :glossaries, only: [:index, :create, :update, :show] do
+    member do
+      put :add_vocabularies
+    end
+  end
 end

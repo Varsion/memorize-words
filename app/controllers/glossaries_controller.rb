@@ -31,9 +31,15 @@ class GlossariesController < ApplicationController
     end
   end
 
-  def delete
-    # archive
-    # maybe need
+  def add_vocabularies
+    @glossary = @current_user.glossaries.find_by(id: params[:id])
+
+    if @glossary.present? && @glossary.can_update?(@current_user)
+      @glossary.add_vocabularies(params[:vocabulary_ids])
+      handle_ok
+    else
+      handle_401
+    end
   end
 
   private

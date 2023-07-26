@@ -84,4 +84,39 @@ RSpec.describe "Glossaries", type: :request do
       })
     end
   end
+
+  context "add_vocabularies" do
+    before(:each) do
+      @vocs = create_list(:vocabulary, 5)
+    end
+
+    it "success" do
+      glossary = @user.glossaries.sample
+      put "/glossaries/#{glossary.id}/add_vocabularies",
+        params: {
+          vocabulary_ids: @vocs.pluck(:id),
+        }.to_json, headers: user_headers
+      expect(response.status).to eq(200)
+      expect(glossary.reload.vocabularies.count).to eq(5)
+    end
+
+    it "fail, no your glossary" do
+      new_user = create(:user)
+      glossary = create(:glossary, owner: new_user)
+      put "/glossaries/#{glossary.id}/add_vocabularies",
+        params: {
+          vocabulary_ids: @vocs.pluck(:id),
+        }.to_json, headers: user_headers
+      expect(response.status).to eq(401)
+    end
+
+    it "fail, can't update system glossary" do
+      glossary = create(:glossary, is_system: true)
+      put "/glossaries/#{glossary.id}/add_vocabularies",
+        params: {
+          vocabulary_ids: @vocs.pluck(:id),
+        }.to_json, headers: user_headers
+      expect(response.status).to eq(401)
+    end
+  end
 end
