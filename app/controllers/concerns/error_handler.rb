@@ -22,11 +22,15 @@ module ErrorHandler
     handle_error(status: 422, fields: fields, message: message || "参数不合法")
   end
 
-  def handle_401(err:)
+  def handle_401(err: nil)
     handle_error(status: 401, err: err, message: "用户权限校验失败")
   end
 
   def handle_404(fields:, model:)
     handle_error(status: 404, fields: fields, message: "#{model} Not Found")
+  end
+
+  def handle_ok(message: "success")
+    render plain: { message: message }.to_json, status: 200
   end
 end
