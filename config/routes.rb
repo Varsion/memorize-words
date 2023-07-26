@@ -10,5 +10,15 @@ Rails.application.routes.draw do
     member do
       put :add_vocabularies
     end
+
+    resources :vocabularies, only: [:index, :show] do
+      collection do
+        get :sample
+      end
+
+      member do
+        put :mark
+      end
+    end
   end
 end
