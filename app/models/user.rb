@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :collects
   has_many :glossaries, through: :collects
 
+  has_many :mark_logs
+
   def login
     JWT.encode({
       user_id: id,
