@@ -37,6 +37,12 @@ class VocabulariesController < ApplicationController
     handle_ok
   end
 
+  def search
+    @vocabularies = Vocabulary.includes(:sentences)
+      .where("display LIKE :search OR secondly_display LIKE :search", search: "%#{params[:search]}%")
+    render "index"
+  end
+
   private
 
   def set_glossary

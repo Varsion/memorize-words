@@ -21,4 +21,10 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :vocabularies, only: [] do
+    collection do
+      get :search
+    end
+  end
 end

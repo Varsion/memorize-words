@@ -101,4 +101,31 @@ RSpec.describe "Vocabularies", type: :request do
       expect(MarkLog.count).to eq(1)
     end
   end
+
+  context "get /search" do
+    it "success, a key string get many" do
+      voc_hello = create(:vocabulary, display: "hello")
+      voc_loading = create(:vocabulary, display: "loading")
+      key_string = "lo"
+
+      get "/vocabularies/search?search=#{key_string}", headers: user_headers
+
+      result = JSON.parse(response.body)
+      expect(result.count).to eq(2)
+      expect(result.pluck("display")).to match_array(["hello", "loading"])
+    end
+
+    it "success, with display or secondly_display" do
+      voc_hello = create(:vocabulary, display: "hello")
+      voc_loading = create(:vocabulary, secondly_display: "loading")
+      key_string = "lo"
+
+      get "/vocabularies/search?search=#{key_string}", headers: user_headers
+
+      result = JSON.parse(response.body)
+      expect(result.count).to eq(2)
+      expect(result.pluck("display")).to include("hello")
+      expect(result.pluck("secondly_display")).to include("loading")
+    end
+  end
 end
