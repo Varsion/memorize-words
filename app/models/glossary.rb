@@ -12,4 +12,14 @@ class Glossary < ApplicationRecord
     vocs = Vocabulary.where(id: vocabulary_ids)
     vocabularies << vocs
   end
+
+  def vocabularies_stats(user)
+    learnings = vocabularies.left_joins(:mark_logs).where(mark_logs: { user_id: user.id })
+    knowns = learnings.where(mark_logs: { action: "known" })
+    {
+      count: vocabularies.count,
+      learning_count: learnings.count,
+      known_count: knowns.count,
+    }
+  end
 end
