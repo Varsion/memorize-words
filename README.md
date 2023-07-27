@@ -4,12 +4,10 @@
 
 ## Description
 
-*PENDING*
+**BLANK**
 
-## ToDo
+## Database Diagram
 
-* [x] User
-* [ ] Session
-* [ ] Glossary
-* [ ] Vocabulary
-* [ ] Collection
+Power by: https://dbdiagram.io/
+
+![Diagram](./doc/diagram.png)
