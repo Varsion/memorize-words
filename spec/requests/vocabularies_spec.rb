@@ -12,7 +12,46 @@ RSpec.describe "Vocabularies", type: :request do
   end
 
   context "get /index" do
-    # pending
+    before(:each) do
+      @voc_known = create_list(:vocabulary, 5)
+      @glossary.add_vocabularies(@voc_known.pluck(:id))
+
+      @voc_known.each do |voc|
+        create(:mark_log, vocabulary: voc, user: @user)
+      end
+
+      @voc_unknown = create(:vocabulary)
+      @glossary.add_vocabularies([@voc_unknown.id])
+      create(:mark_log, vocabulary: @voc_unknown, user: @user, action: "unknown")
+    end
+
+    it "success, unknown firstly" do
+      get "/glossaries/#{@glossary.id}/vocabularies",
+        params: {
+          order_firstly: "unknown",
+        }, headers: user_headers
+
+      result_ids = JSON.parse(response.body).pluck("id")
+      expect(response.status).to eq(200)
+
+      expect(result_ids[0..9]).to match_array(@vocs.pluck(:id))
+      expect(result_ids[10]).to eq(@voc_unknown.id)
+      expect(result_ids[11..-1]).to eq(@voc_known.pluck(:id))
+    end
+
+    it "success, known firstly" do
+      get "/glossaries/#{@glossary.id}/vocabularies",
+          params: {
+            order_firstly: "known",
+          }, headers: user_headers
+
+      result_ids = JSON.parse(response.body).pluck("id")
+      expect(response.status).to eq(200)
+
+      expect(result_ids[0..4]).to match_array(@voc_known.pluck(:id))
+      expect(result_ids[5]).to eq(@voc_unknown.id)
+      expect(result_ids[6..-1]).to match_array(@vocs.pluck(:id))
+    end
   end
 
   context "get /show" do
@@ -23,6 +62,19 @@ RSpec.describe "Vocabularies", type: :request do
       expect(response.status).to eq(200)
       expect(response.body).to include_json({
         id: @voc.id,
+        learning_state: "unknown",
+      })
+    end
+
+    it "success, with known" do
+      create(:mark_log, vocabulary: @voc, user: @user)
+      get "/glossaries/#{@glossary.id}/vocabularies/#{@voc.id}",
+        params: {}, headers: user_headers
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include_json({
+        id: @voc.id,
+        learning_state: "known",
       })
     end
   end

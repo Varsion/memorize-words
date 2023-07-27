@@ -22,4 +22,36 @@ class Glossary < ApplicationRecord
       known_count: knowns.count,
     }
   end
+
+  # vocabularies order query
+
+  def self.known_firstly_query
+    "
+      CASE
+        WHEN mark_logs.id is NULL
+          THEN 2
+        WHEN mark_logs.action = 1
+          THEN 1
+        WHEN mark_logs.action = 0
+          THEN 0
+        ELSE
+          3
+      END, mark_logs.updated_at
+    "
+  end
+
+  def self.unknown_firstly_query
+    "
+      CASE
+        WHEN mark_logs.id is NULL
+          THEN 0
+        WHEN mark_logs.action = 1
+          THEN 1
+        WHEN mark_logs.action = 0
+          THEN 2
+        ELSE
+          3
+      END, mark_logs.updated_at
+    "
+  end
 end

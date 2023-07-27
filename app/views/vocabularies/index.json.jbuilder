@@ -1,1 +1,1 @@
-json.array! @vocabularies, partial: "shared/vocabulary", as: :glossary
+json.array! @vocabularies, partial: "shared/vocabulary", as: :vocabulary
