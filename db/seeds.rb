@@ -8,7 +8,7 @@
 
 20.times do |i|
   Vocabulary.create(
-    display: Faker::Games::DnD.monster,
+    display: Faker::Number.hexadecimal(digits: 5),
     description: Faker::Lorem.paragraph,
     pronunciation: Faker::Games::DnD.monster,
     translation: Faker::Games::DnD.alignment,
