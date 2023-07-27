@@ -34,22 +34,28 @@ RSpec.describe "Glossaries", type: :request do
       glossary = @user.glossaries.first
       vocs = create_list(:vocabulary, 5)
       glossary.add_vocabularies(vocs.pluck(:id))
-      get "/glossaries/#{glossary.id}", headers: user_headers
+
+      get "/glossaries/#{glossary.id}",
+        params: {
+          includes: "vocabularies",
+        }, headers: user_headers
+
       expect(response.status).to eq(200)
       result = JSON.parse(response.body)
       expect(result["vocabularies"].count).to eq(5)
     end
 
-    it "get glossaries with vocabulary and sentences" do
+    it "get glossaries without vocabulary" do
       glossary = @user.glossaries.first
-      voc = create(:vocabulary)
-      sentence = create(:sentence, vocabulary: voc)
-      glossary.add_vocabularies([voc.id])
-      get "/glossaries/#{glossary.id}", headers: user_headers
+      vocs = create_list(:vocabulary, 5)
+      glossary.add_vocabularies(vocs.pluck(:id))
+
+      get "/glossaries/#{glossary.id}",
+        headers: user_headers
+
       expect(response.status).to eq(200)
       result = JSON.parse(response.body)
-      expect(result["vocabularies"].count).to eq(1)
-      expect(result["vocabularies"][0]["sentences"].count).to eq(1)
+      expect(result["vocabularies"]).to eq(nil)
     end
   end
 

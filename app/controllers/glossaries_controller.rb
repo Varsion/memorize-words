@@ -1,8 +1,10 @@
 class GlossariesController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_includes
 
   def index
-    @glossaries = @current_user.glossaries.uniq
+    @glossaries = @current_user.glossaries.distinct
+    @glossaries = @glossaries.includes(@includes)
   end
 
   def create
@@ -13,7 +15,7 @@ class GlossariesController < ApplicationController
   end
 
   def show
-    @glossary = Glossary.find_by(id: params[:id])
+    @glossary = @current_user.glossaries.find_by(id: params[:id])
   end
 
   def update
@@ -50,5 +52,9 @@ class GlossariesController < ApplicationController
 
   def update_params
     params.permit(:title, :content)
+  end
+
+  def set_includes
+    @includes = Array.wrap(params[:includes]) || []
   end
 end
