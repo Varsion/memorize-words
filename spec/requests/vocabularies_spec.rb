@@ -52,6 +52,19 @@ RSpec.describe "Vocabularies", type: :request do
       expect(result_ids[5]).to eq(@voc_unknown.id)
       expect(result_ids[6..-1]).to match_array(@vocs.pluck(:id))
     end
+
+    it "success, with page" do
+      get "/glossaries/#{@glossary.id}/vocabularies",
+        params: {
+          order_firstly: "unknown",
+          per_page: 5,
+          page: 1,
+        }, headers: user_headers
+
+      result = JSON.parse(response.body)
+      expect(response.status).to eq(200)
+      expect(result.count).to eq(5)
+    end
   end
 
   context "get /show" do

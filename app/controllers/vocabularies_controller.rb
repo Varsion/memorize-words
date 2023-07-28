@@ -13,8 +13,9 @@ class VocabulariesController < ApplicationController
       end
 
     @vocabularies = @vocabularies.left_joins(:mark_logs).order(Arel.sql(order_string))
-    # last
+
     @vocabularies = @vocabularies.includes(:sentences)
+    @vocabularies = @vocabularies.page(params[:page]).per(params[:per_page])
   end
 
   def show
